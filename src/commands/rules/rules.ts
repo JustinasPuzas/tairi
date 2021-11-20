@@ -145,7 +145,7 @@ class Rules implements apiCommand {
         await i.update({ embeds: [res], components: [row] });
         setTimeout(async () => {
           console.log(`Delete msg`);
-          await i.deleteReply();
+          await i.deleteReply().catch(err => console.log(err));
         }, 5 * 1000);
       } else {
         i.reply({ content: `Nekisk nagu nahuj`, ephemeral: true });
