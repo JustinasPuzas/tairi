@@ -1,0 +1,20 @@
+{
+  "name": "tairi",
+  "version": "0.0.1",
+  "description": "TaiRi Bot",
+  "main": "/dist/index.js",
+  "scripts": {
+    "dev": "nodemon ./dist/index.js",
+    "build": "node ./dist/index.js"
+  },
+  "author": "IGORIS#1569 655175393342521383",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.23.1",
+    "discord.js": "^13.2.0",
+    "dotenv": "^10.0.0",
+    "mongoose": "^6.0.12",
+    "pretty-ms": "^7.0.1"
+  }
+}
