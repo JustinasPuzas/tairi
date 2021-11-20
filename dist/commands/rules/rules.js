@@ -123,7 +123,7 @@ class Rules {
                     yield i.update({ embeds: [res], components: [row] });
                     setTimeout(() => __awaiter(this, void 0, void 0, function* () {
                         console.log(`Delete msg`);
-                        yield i.deleteReply();
+                        yield i.deleteReply().catch(err => console.log(err));
                     }), 5 * 1000);
                 }
                 else {
