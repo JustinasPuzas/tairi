@@ -22,8 +22,8 @@ const Cooldown_1 = __importDefault(require("./modules/cooldown/Cooldown"));
 const fs = require("fs").promises;
 class Client extends discord_js_1.default.Client {
     constructor() {
-        // extending Client Class
         super(...arguments);
+        // extending Client Class
         this._maintenanceMode = false;
         this._prefix = config_1.default.prefix;
         this._commands = [];

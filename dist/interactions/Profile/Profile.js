@@ -20,6 +20,7 @@ const reputation_1 = __importDefault(require("../../database/schemas/reputation"
 const HomePage_1 = __importDefault(require("./Pages/HomePage"));
 const DiscordPage_1 = __importDefault(require("./Pages/DiscordPage"));
 const message_1 = __importDefault(require("../../database/schemas/message"));
+const pretty_ms_1 = __importDefault(require("pretty-ms"));
 class Profile {
     // default active time 30s 
     // each interaction +30s
@@ -30,6 +31,7 @@ class Profile {
         this.ready = true;
         this.interactionCommand = new InteractionCommand_1.default(this);
         this.textCommand = new TextCommand_1.default(this);
+        this.openDisplayIn = new Map();
         console.log(`PROFILE`);
     }
     executeCommand(authorMember, targetMember, request, client) {
@@ -38,6 +40,9 @@ class Profile {
             const reputationData = this.getReputation(targetMember.id);
             const memberData = client.getMember(targetMember);
             const memberMessageCount = this.getMessageCount(targetMember.id);
+            if (yield this.checkCoolDown(authorMember.id, request.channelId, request))
+                return;
+            this.createCoolDown(authorMember.id, request.channelId);
             const results = yield Promise.all([reputationData, memberData, memberMessageCount, yield targetMember.user.fetch()]);
             const discordPage = new DiscordPage_1.default(authorMember, targetMember, navActionRow);
             const reputationPage = new ReputationPage_1.default(authorMember, targetMember, navActionRow, results[0]);
@@ -104,6 +109,27 @@ class Profile {
                 default:
                     return null;
             }
+        });
+    }
+    createCoolDown(userId, channelId) {
+        this.openDisplayIn.set(channelId, new Date(Date.now()));
+    }
+    checkCoolDown(userId, channelId, interaction) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const greenLight = ["903249149615538179", "889528960029954049"];
+            if (greenLight.includes(channelId))
+                return false; // jei kanalas skirtas botu komandoms
+            const openSince = this.openDisplayIn.get(channelId);
+            if (!openSince)
+                return false;
+            if (openSince.getTime() + 2 * 60 * 1000 < Date.now())
+                return false;
+            const response = yield interaction.reply({ content: `naudoti komandą Profile galėsite už ${(0, pretty_ms_1.default)((openSince.getTime() + (2 * 60 * 1000)) - Date.now())}`, ephemeral: true, fetchReply: true });
+            setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                //await response.delete().catch(err => console.log(err))
+            }), 5 * 1000);
+            return true;
+            // save active windows and delete them ignore whiteListed Cannels hardCode in
         });
     }
 }
