@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = __importDefault(require("discord.js"));
 const reputation_1 = __importDefault(require("../../../database/schemas/reputation"));
 class ReputationPage {
-    constructor(authorMember, targetMember, navActionRow, reputationData) {
+    constructor(authorMember, targetMember, reputationData) {
         this.name = "reputationPage";
         this.positiveReputationCount = 0;
         this.negativeReputationCount = 0;
@@ -25,32 +25,30 @@ class ReputationPage {
         this.page = { embeds: [], components: [] };
         this.targetMember = targetMember;
         this.authorMember = authorMember;
-        this.navActionRow = navActionRow;
         this.reputationList = reputationData;
         this.loadData();
-        this.updateButtons();
         this.updateEmbed();
     }
-    getPage() {
+    getPage(navRow) {
         return __awaiter(this, void 0, void 0, function* () {
             this.loadData();
-            this.updateButtons();
+            this.updateButtons(navRow);
             this.updateEmbed();
             return this.page;
         });
     }
-    buttonClickHandler(customId) {
+    buttonClickHandler(customId, navRow) {
         return __awaiter(this, void 0, void 0, function* () {
             // handle updating info on btn click
             switch (customId) {
                 case "nextRepPage":
                     this.pageId++;
-                    this.updateButtons();
+                    this.updateButtons(navRow);
                     this.updateEmbed();
                     return this.page;
                 case "prevRepPage":
                     this.pageId--;
-                    this.updateButtons();
+                    this.updateButtons(navRow);
                     this.updateEmbed();
                     return this.page;
                 default:
@@ -59,13 +57,13 @@ class ReputationPage {
             // update pages buttons
         });
     }
-    updateButtons() {
+    updateButtons(navRow) {
         this.buildActionRow();
         const btnRow = this.buttons.values();
         const row = new discord_js_1.default.MessageActionRow().addComponents([
             ...btnRow
         ]);
-        this.page.components = [this.navActionRow, row];
+        this.page.components = [navRow, row];
     }
     buildActionRow() {
         const displayDownloadButton = (this.authorMember.id == this.targetMember.id) ? true : false;

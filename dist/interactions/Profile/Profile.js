@@ -36,7 +36,6 @@ class Profile {
     }
     executeCommand(authorMember, targetMember, request, client) {
         return __awaiter(this, void 0, void 0, function* () {
-            const navActionRow = this.buildNavActionRow();
             const reputationData = this.getReputation(targetMember.id);
             const memberData = client.getMember(targetMember);
             const memberMessageCount = this.getMessageCount(targetMember.id);
@@ -44,10 +43,11 @@ class Profile {
                 return;
             this.createCoolDown(authorMember.id, request.channelId);
             const results = yield Promise.all([reputationData, memberData, memberMessageCount, yield targetMember.user.fetch()]);
-            const discordPage = new DiscordPage_1.default(authorMember, targetMember, navActionRow);
-            const reputationPage = new ReputationPage_1.default(authorMember, targetMember, navActionRow, results[0]);
-            const homePage = new HomePage_1.default(authorMember, targetMember, navActionRow, results[1], reputationPage, results[2]);
-            const payload = homePage.getPage();
+            const reputationPage = new ReputationPage_1.default(authorMember, targetMember, results[0]);
+            const navActionRow = this.buildNavActionRow(reputationPage.reputationCount);
+            const discordPage = new DiscordPage_1.default(authorMember, targetMember);
+            const homePage = new HomePage_1.default(authorMember, targetMember, results[1], reputationPage, results[2]);
+            const payload = homePage.getPage(navActionRow);
             const response = yield request.reply(Object.assign(Object.assign({}, payload), { fetchReply: true }));
             const collector = response.createMessageComponentCollector({
                 componentType: "BUTTON",
@@ -60,7 +60,7 @@ class Profile {
                 }
                 const handlers = [
                     yield this.buttonClickHandler(i.customId, { reputationPage, homePage, discordPage }),
-                    yield reputationPage.buttonClickHandler(i.customId),
+                    yield reputationPage.buttonClickHandler(i.customId, navActionRow),
                 ].filter(handler => handler != null);
                 if (handlers[0])
                     yield i.update(handlers[0]);
@@ -80,7 +80,7 @@ class Profile {
             return (yield message_1.default.countDocuments({ discordId }));
         });
     }
-    buildNavActionRow() {
+    buildNavActionRow(reputation) {
         const homePage = new discord_js_1.default.MessageButton()
             .setCustomId("homePage")
             .setLabel("Profilis")
@@ -89,6 +89,10 @@ class Profile {
             .setCustomId("reputationPage")
             .setLabel("Reputacija")
             .setStyle("PRIMARY");
+        if (reputation > 0)
+            reputationPage.setStyle("SUCCESS");
+        else if (reputation < 0)
+            reputationPage.setStyle("DANGER");
         const discordPage = new discord_js_1.default.MessageButton()
             .setCustomId("discordPage")
             .setLabel("Discord")

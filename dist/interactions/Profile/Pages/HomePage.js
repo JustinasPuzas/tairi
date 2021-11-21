@@ -15,28 +15,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = __importDefault(require("discord.js"));
 const pretty_ms_1 = __importDefault(require("pretty-ms"));
 class HomePage {
-    constructor(authorMember, targetMember, navActionRow, memberData, reputationData, messageCount) {
+    constructor(authorMember, targetMember, memberData, reputationData, messageCount) {
         this.name = "reputationPage";
         this.page = { embeds: [], components: [] };
         this.targetMember = targetMember;
         this.authorMember = authorMember;
-        this.navActionRow = navActionRow;
         this.memberData = memberData;
         this.reputationData = reputationData;
         this.messageCount = messageCount;
     }
-    getPage() {
-        this.updateButtons();
+    getPage(navRow) {
+        this.updateButtons(navRow);
         this.updateEmbed();
         return this.page;
     }
-    updateButtons() {
+    updateButtons(navRow) {
         //this.buildActionRow();
         //const btnRow = this.buttons.values()
         // const row = new discord.MessageActionRow().addComponents([
         //   ...btnRow
         // ]);
-        this.page.components = [this.navActionRow];
+        this.page.components = [navRow];
     }
     buttonClickHandler(customId) {
         return __awaiter(this, void 0, void 0, function* () {
