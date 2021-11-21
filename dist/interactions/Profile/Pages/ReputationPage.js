@@ -105,7 +105,7 @@ class ReputationPage {
         //let index = 0;
         for (const rep of this.reputationWithCommentsList.slice(0 + (this.pageId * 10), 10 + (this.pageId * 10))) {
             const comment = (_a = rep.content) === null || _a === void 0 ? void 0 : _a.slice(0, 100);
-            description += `\n ${rep.positive ? "<:plusFill:911782483123658762>" : "<:minusFill:911782465000071240>"} <@${rep.authorId}>: ${comment} `;
+            description += `\n ${rep.positive ? "<:plus:911929035838357505>" : "<:minus2:911930596530454539>"} <@${rep.authorId}>: ${comment} `;
             //index++;
             //if(index == 10) break;
         }
