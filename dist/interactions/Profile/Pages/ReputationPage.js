@@ -59,24 +59,35 @@ class ReputationPage {
     }
     updateButtons(navRow) {
         this.buildActionRow();
+        if (this.buttons.length == 0) {
+            this.page.components = [navRow];
+            return;
+        }
         const btnRow = this.buttons.values();
         const row = new discord_js_1.default.MessageActionRow().addComponents([
             ...btnRow
         ]);
         this.page.components = [navRow, row];
+        return;
     }
     buildActionRow() {
         const displayDownloadButton = (this.authorMember.id == this.targetMember.id) ? true : false;
-        const prevPageBtn = this.pageId != 0 ? new discord_js_1.default.MessageButton()
-            .setCustomId("prevRepPage")
-            .setStyle("SECONDARY")
-            .setLabel(" ")
-            .setEmoji("◀️") : new discord_js_1.default.MessageButton()
-            .setCustomId("prevRepPage")
-            .setStyle("SECONDARY")
-            .setDisabled(true)
-            .setLabel(" ")
-            .setEmoji("◀️");
+        let prevPageBtn;
+        if (this.reputationWithCommentsList.length <= 10) {
+            prevPageBtn = null;
+        }
+        else {
+            prevPageBtn = this.pageId != 0 ? new discord_js_1.default.MessageButton()
+                .setCustomId("prevRepPage")
+                .setStyle("SECONDARY")
+                .setLabel(" ")
+                .setEmoji("◀️") : new discord_js_1.default.MessageButton()
+                .setCustomId("prevRepPage")
+                .setStyle("SECONDARY")
+                .setDisabled(true)
+                .setLabel(" ")
+                .setEmoji("◀️");
+        }
         const nextPageBtn = ((this.pageId + 1) * 10) < this.reputationWithCommentsList.length ? new discord_js_1.default.MessageButton()
             .setCustomId("nextRepPage")
             .setStyle("SECONDARY")
@@ -96,7 +107,8 @@ class ReputationPage {
         const avatarUrl = this.targetMember.avatarURL() || this.targetMember.user.avatarURL() || this.targetMember.user.defaultAvatarURL;
         const color = this.targetMember.displayHexColor;
         const userName = this.targetMember.nickname ? this.targetMember.nickname : this.targetMember.user.username;
-        let description = `***+REP:*** **${this.positiveReputationCount}** | ***-REP:*** **${this.negativeReputationCount}**\n***Viso:*** **${this.reputationCount}**\n`;
+        const authorFooter = this.reputationWithCommentsList.length <= 10 ? userName : `Page: ${this.pageId + 1}/${Math.ceil(this.reputationWithCommentsList.length / 10)}`;
+        let description = `***+REP:*** **${this.positiveReputationCount}** | ***-REP:*** **${this.negativeReputationCount}**\n***Viso:*** **${this.positiveReputationCount + this.negativeReputationCount}**\n`;
         const embed = new discord_js_1.default.MessageEmbed()
             .setTitle(`${userName} | REPUTACIJA`)
             .setThumbnail(`${avatarUrl}`);
@@ -108,7 +120,7 @@ class ReputationPage {
             //if(index == 10) break;
         }
         embed.setDescription(description)
-            .setFooter(`Page: ${this.pageId + 1}/${Math.ceil(this.reputationWithCommentsList.length / 10)}`, `${authorAvatarUrl}`)
+            .setFooter(authorFooter, `${authorAvatarUrl}`)
             .setColor(color);
         this.page.embeds = [embed];
     }
