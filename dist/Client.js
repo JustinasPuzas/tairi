@@ -29,7 +29,7 @@ class Client extends discord_js_1.default.Client {
         this._commands = [];
         this.Rules = new rules_1.default();
         this.InteractionCommands = new interactions_1.default(this);
-        this.coolDownManager = new Cooldown_1.default();
+        this.cDM = new Cooldown_1.default();
     }
     getMaintenanceMode() {
         return this._maintenanceMode;
@@ -39,6 +39,13 @@ class Client extends discord_js_1.default.Client {
     }
     runInteractionCommand(command) {
         return __awaiter(this, void 0, void 0, function* () {
+            const channelId = command.channelId;
+            const userId = command.user.id;
+            if (yield this.cDM.isOnCoolDown(userId, channelId)) {
+                console.log("On cd");
+                return;
+            }
+            this.cDM.createCoolDown(userId, channelId);
             yield this.InteractionCommands.executeCommand(command, this);
         });
     }
@@ -47,8 +54,15 @@ class Client extends discord_js_1.default.Client {
             const findMember = yield member_1.default.findOne({ discordId: member.id });
             if (findMember)
                 return findMember;
-            const firstTimeJoined = member.joinedAt ? member.joinedAt : new Date(Date.now());
-            const createMember = yield member_1.default.create({ guildId: config_1.default.guildId, discordId: member.id, roles: [...member.roles.cache.keys()], firstTimeJoined });
+            const firstTimeJoined = member.joinedAt
+                ? member.joinedAt
+                : new Date(Date.now());
+            const createMember = (yield member_1.default.create({
+                guildId: config_1.default.guildId,
+                discordId: member.id,
+                roles: [...member.roles.cache.keys()],
+                firstTimeJoined,
+            }));
             return createMember;
         });
     }
@@ -62,7 +76,15 @@ class Client extends discord_js_1.default.Client {
             let attachments = message.attachments;
             const discordId = message.author.id;
             const messageId = message.id;
-            yield message_1.default.create({ guildId, channelId, messageId, content, timeStamp, attachments, discordId });
+            yield message_1.default.create({
+                guildId,
+                channelId,
+                messageId,
+                content,
+                timeStamp,
+                attachments,
+                discordId,
+            });
         });
     }
     deleteMessage(message) {
@@ -92,6 +114,13 @@ class Client extends discord_js_1.default.Client {
                         const args = this.parseArgs(message.content, content[0]);
                         if (command.isThisCommand(args[0])) {
                             try {
+                                const channelId = message.channelId;
+                                const userId = message.author.id;
+                                if (yield this.cDM.isOnCoolDown(userId, channelId)) {
+                                    console.log("On cd");
+                                    return;
+                                }
+                                this.cDM.createCoolDown(userId, channelId);
                                 yield command.runCommand(args, message, this);
                             }
                             catch (err) {
@@ -105,6 +134,13 @@ class Client extends discord_js_1.default.Client {
                         const args = this.parseArgs(message.content, content[0]);
                         if (command.isThisCommand(args[0])) {
                             try {
+                                const channelId = message.channelId;
+                                const userId = message.author.id;
+                                if (yield this.cDM.isOnCoolDown(userId, channelId)) {
+                                    console.log("On cd");
+                                    return;
+                                }
+                                this.cDM.createCoolDown(userId, channelId);
                                 yield command.runCommand(args, message, this);
                             }
                             catch (err) {

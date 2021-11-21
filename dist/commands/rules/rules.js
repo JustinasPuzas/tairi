@@ -132,7 +132,8 @@ class Rules {
             }));
             collector.on("end", (collected) => __awaiter(this, void 0, void 0, function* () {
                 if (channel.messages.cache.get(verifyMessage.id)) {
-                    yield verifyMessage.delete();
+                    yield verifyMessage.delete().catch(err => console.log(err));
+                    ;
                 }
                 if (prevWebhookId && prevChannelId) {
                     const guild = message.guild;

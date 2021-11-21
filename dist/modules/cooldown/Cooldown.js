@@ -12,46 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const pretty_ms_1 = __importDefault(require("pretty-ms"));
+const config_1 = __importDefault(require("../../config"));
 class CoolDown {
     constructor() {
-        this.coolDowns = new Map();
+        this.onCoolDown = new Map();
         // user each user after active display cmd 15 sec on close
         // channel one display command per channel
         // 
     }
-    checkCoolDown(userId, channelId, request) {
+    isOnCoolDown(userId, channelId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const userCoolDown = this.coolDowns.get(userId);
-            const channelCoolDown = this.coolDowns.get(userId);
-            if (userCoolDown) {
-                if (userCoolDown.getTime() < Date.now()) {
-                    this.coolDowns.delete(userId);
-                    return false;
-                }
-                const timeLeft = userCoolDown.getTime() - Date.now();
-                const response = yield request.reply({ content: `Galėsite naudotis komandandomis po ${(0, pretty_ms_1.default)(timeLeft)}\n arba pranykus šiai žinutei` });
-                setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-                    yield response.delete().catch(err => console.log(err));
-                }), timeLeft);
-                // reply on cd for user aka you can use commands after
+            console.log(this.onCoolDown);
+            const channel = this.onCoolDown.get(channelId);
+            if (!channel)
+                return false;
+            const user = channel.get(userId);
+            if (!user)
+                return false;
+            if (user.getTime() + config_1.default.globalCoolDown > Date.now())
                 return true;
-            }
-            if (channelCoolDown) {
-                if (channelCoolDown.getTime() < Date.now()) {
-                    this.coolDowns.delete(channelId);
-                    return false;
-                }
-                const timeLeft = channelCoolDown.getTime() - Date.now();
-                const response = yield request.reply({ content: `Šią komandą bus galima naudoti po ${(0, pretty_ms_1.default)(timeLeft)}\n arba dabar kitame kanale` });
-                setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-                    yield response.delete().catch(err => console.log(err));
-                }), timeLeft);
-                // reply on cd for user aka you can use commands after
-                return true;
-            }
-            // checks if there is active coolDown for channel and user
-            // called before calling command
             return false;
         });
     }
@@ -59,17 +38,27 @@ class CoolDown {
      * for display command pass channelId
      * for user pass userId
      */
-    createCoolDown(Id, end) {
-        this.coolDowns.set(Id, end);
-        //creates coolDown for channel and user
-        //called from command
+    createCoolDown(userId, channelId) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.onCoolDown.get(channelId)) {
+                console.log(`No Channel`);
+                this.onCoolDown.set(channelId, new Map());
+            }
+            if (!((_a = this.onCoolDown.get(channelId)) === null || _a === void 0 ? void 0 : _a.get(userId))) {
+                (_b = this.onCoolDown.get(channelId)) === null || _b === void 0 ? void 0 : _b.set(userId, new Date(Date.now()));
+            }
+            setTimeout(() => {
+                var _a;
+                (_a = this.onCoolDown.get(channelId)) === null || _a === void 0 ? void 0 : _a.delete(userId);
+            }, config_1.default.globalCoolDown);
+        });
     }
     /**
      *
      * used for premature cd removing
      */
     deleteCoolDown(Id) {
-        this.coolDowns.delete(Id);
         //deletes coolDown for channel and user
         //called from command
     }

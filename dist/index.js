@@ -39,20 +39,40 @@ client.on("ready", () => __awaiter(void 0, void 0, void 0, function* () {
     yield client.registerParentCommands();
     console.log(`Bot is ready in ${client.guilds.cache.size} guilds`);
 }));
-client.on("messageCreate", (message) => {
-    client.findOneAndRunCommand(message);
-    client.logMessage(message);
-});
+client.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield client.findOneAndRunCommand(message);
+        yield client.logMessage(message);
+    }
+    catch (err) {
+        console.log(err);
+    }
+}));
 client.on("messageUpdate", (oldMessage, newMessage) => __awaiter(void 0, void 0, void 0, function* () {
-    oldMessage = yield oldMessage.fetch();
-    newMessage = yield newMessage.fetch();
-    yield client.updateMessage(oldMessage, newMessage);
+    try {
+        oldMessage = yield oldMessage.fetch();
+        newMessage = yield newMessage.fetch();
+        yield client.updateMessage(oldMessage, newMessage);
+    }
+    catch (err) {
+        console.log(err);
+    }
 }));
 client.on("messageDelete", (message) => __awaiter(void 0, void 0, void 0, function* () {
-    yield client.deleteMessage(message);
+    try {
+        yield client.deleteMessage(message);
+    }
+    catch (err) {
+        console.log(err);
+    }
 }));
-client.on("interactionCreate", (interaction) => {
-    if (interaction.isCommand())
-        client.runInteractionCommand(interaction);
-});
+client.on("interactionCreate", (interaction) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (interaction.isCommand())
+            yield client.runInteractionCommand(interaction);
+    }
+    catch (err) {
+        console.log(err);
+    }
+}));
 client.login(process.env.TOKEN);
