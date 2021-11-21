@@ -29,8 +29,10 @@ class CoolDown {
             const user = channel.get(userId);
             if (!user)
                 return false;
-            if (user.getTime() + config_1.default.globalCoolDown > Date.now())
+            if (user.getTime() + config_1.default.globalCoolDown > Date.now()) {
+                //await warn();
                 return true;
+            }
             return false;
         });
     }

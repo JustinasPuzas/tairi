@@ -41,10 +41,10 @@ class Client extends discord_js_1.default.Client {
         return __awaiter(this, void 0, void 0, function* () {
             const channelId = command.channelId;
             const userId = command.user.id;
-            if (yield this.cDM.isOnCoolDown(userId, channelId)) {
-                console.log("On cd");
-                return;
-            }
+            // if (await this.cDM.isOnCoolDown(userId, channelId)) {
+            //   console.log("On cd");
+            //   return;
+            // }
             this.cDM.createCoolDown(userId, channelId);
             yield this.InteractionCommands.executeCommand(command, this);
         });
