@@ -122,12 +122,17 @@ class Profile {
             const openSince = this.openDisplayIn.get(channelId);
             if (!openSince)
                 return false;
+            const diff = openSince.getTime() + (2 * 60 * 1000) - Date.now();
             if (openSince.getTime() + 2 * 60 * 1000 < Date.now())
                 return false;
-            const response = yield interaction.reply({ content: `naudoti komandą Profile galėsite už ${(0, pretty_ms_1.default)((openSince.getTime() + (2 * 60 * 1000)) - Date.now())}`, ephemeral: true, fetchReply: true });
+            const embed = new discord_js_1.default.MessageEmbed()
+                .setTitle('CoolDown')
+                .setColor("BLURPLE")
+                .setDescription(`Komandą Profile galėsite naudoti už ${(0, pretty_ms_1.default)(diff)}`);
+            const response = yield interaction.reply({ embeds: [embed], ephemeral: true, fetchReply: true });
             setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-                //await response.delete().catch(err => console.log(err))
-            }), 5 * 1000);
+                yield response.delete().catch(err => console.log(err));
+            }), diff);
             return true;
             // save active windows and delete them ignore whiteListed Cannels hardCode in
         });

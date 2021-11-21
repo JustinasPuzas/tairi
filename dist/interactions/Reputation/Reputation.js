@@ -35,7 +35,7 @@ class Reputation {
         const description = content ? `${authorMember}: ${content}` : ``;
         const color = this.reputationConfig.color == "custom" ? authorMember.displayHexColor : this.reputationConfig.color;
         const colorFromType = positive ? "GREEN" : "RED";
-        const thumbNail = positive ? "https://cdn.discordapp.com/attachments/902273635560063019/911291922331623464/plusRep.png" : "https://cdn.discordapp.com/attachments/902273635560063019/911291922096717824/minusRep.png";
+        const thumbNail = positive ? "https://cdn.discordapp.com/attachments/889562324678107206/911928356763750420/plus.png" : "https://cdn.discordapp.com/attachments/889562324678107206/911929683594072064/minus2.png";
         const embed1 = new discord_js_1.default.MessageEmbed()
             .setThumbnail(thumbNail)
             .setAuthor(`${targetName}`, `${targetAvatarUrl}`)
