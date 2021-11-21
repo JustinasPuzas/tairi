@@ -54,25 +54,26 @@ class HomePage {
         const targetNickName = this.targetMember.nickname ? this.targetMember.nickname : this.targetMember.user.username;
         const targetAvatarUrl = this.targetMember.avatarURL() || this.targetMember.user.avatarURL() || this.targetMember.user.defaultAvatarURL;
         const targetBannerUrl = this.targetMember.user.bannerURL({ size: 512, dynamic: true }) || this.targetMember.guild.bannerURL({ size: 512 }) || this.targetMember.guild.iconURL({ size: 128 });
-        const targetPremiumSince = this.targetMember.premiumSince ? (0, pretty_ms_1.default)(Date.now() - this.targetMember.premiumSince.getTime(), { compact: true }) : "Not Subscribed big OOF";
+        const targetPremiumSince = this.targetMember.premiumSince ? (0, pretty_ms_1.default)(Date.now() - this.targetMember.premiumSince.getTime(), { compact: true }) : null;
         const authorNickName = this.authorMember.nickname ? this.authorMember.nickname : this.authorMember.user.username;
         const authorAvatarUrl = this.authorMember.avatarURL() || this.authorMember.user.avatarURL() || this.authorMember.user.defaultAvatarURL;
         const targetFirstTimeJoined = this.memberData.firstTimeJoined;
         const reputationCount = this.reputationData.reputationCount;
-        const reputationEmote = reputationCount >= 0 ? "<:upvote:290672088761761792>" : "<:downvote:290672130515795969>";
+        const reputationEmote = reputationCount >= 0 ? "<:plusIcon:911780569694740510>" : "<:minusIcon:911780550983970836>";
         const color = this.targetMember.displayHexColor;
         const embed = new discord_js_1.default.MessageEmbed()
             .setTitle(`${targetNickName} Profilis`)
             .setThumbnail(`${targetAvatarUrl}`)
             .setFields([
-            { name: `Narys jau:`, value: `📆 **${(0, pretty_ms_1.default)(Date.now() - targetFirstTimeJoined.getTime(), { compact: true })}**`, inline: true },
+            { name: `Narys jau`, value: `📆 **${(0, pretty_ms_1.default)(Date.now() - targetFirstTimeJoined.getTime(), { compact: true })}**`, inline: true },
             { name: `Reputacija`, value: `${reputationEmote} **${reputationCount}**`, inline: true },
-            { name: `Žinutės:`, value: `📨 **${this.messageCount}**`, inline: true },
-            { name: `Premium`, value: `<a:nitro:911619302107525130> **${targetPremiumSince}**` }
+            { name: `Žinutės`, value: `📨 **${this.messageCount}**`, inline: true },
         ])
             .setFooter(`${authorNickName}`, `${authorAvatarUrl}`)
             .setImage(`${targetBannerUrl}`)
             .setColor(color);
+        if (targetPremiumSince)
+            embed.addField(`Premium`, `<a:nitro:911619302107525130> **${targetPremiumSince}**`);
         this.page.embeds = [embed];
     }
     loadData() {
