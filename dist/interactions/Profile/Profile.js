@@ -59,7 +59,7 @@ class Profile {
                     return;
                 }
                 const handlers = [
-                    yield this.buttonClickHandler(i.customId, { reputationPage, homePage, discordPage }),
+                    yield this.buttonClickHandler(i.customId, { reputationPage, homePage, discordPage }, navActionRow),
                     yield reputationPage.buttonClickHandler(i.customId, navActionRow),
                 ].filter(handler => handler != null);
                 if (handlers[0])
@@ -100,16 +100,16 @@ class Profile {
         //.setEmoji("<a:discord:911592752658128926>")
         return new discord_js_1.default.MessageActionRow().addComponents([homePage, reputationPage, discordPage]);
     }
-    buttonClickHandler(customId, pages) {
+    buttonClickHandler(customId, pages, navRow) {
         return __awaiter(this, void 0, void 0, function* () {
             const { reputationPage, homePage, discordPage } = pages;
             switch (customId) {
                 case "homePage":
-                    return yield homePage.getPage();
+                    return yield homePage.getPage(navRow);
                 case "reputationPage":
-                    return yield reputationPage.getPage();
+                    return yield reputationPage.getPage(navRow);
                 case "discordPage":
-                    return yield discordPage.getPage();
+                    return yield discordPage.getPage(navRow);
                 default:
                     return null;
             }
