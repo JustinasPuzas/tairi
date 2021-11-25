@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("../../config"));
+//import Settings from './Settings/Settings';
 class ProfileInteraction {
     constructor(mainClass) {
         this.name = "profile";
@@ -46,7 +47,22 @@ class ProfileInteraction {
             if (targetMember.user.bot)
                 targetMember = authorMember;
             // handle input errors O.o
-            yield this.Parent.executeCommand(authorMember, targetMember, interaction, client);
+            //const settings = new Settings(authorMember, interaction, client);
+            try {
+            }
+            catch (err) {
+            }
+            if (interaction.options.getSubcommand()) {
+                console.log(interaction.options.getSubcommand());
+                yield this.Parent.executeCommand(authorMember, targetMember, interaction, client);
+            }
+            else if (interaction.options.getSubcommandGroup()) {
+                console.log(interaction.options.getSubcommandGroup());
+                yield this.Parent.executeCommand(authorMember, targetMember, interaction, client);
+            }
+            else {
+                console.log(`FATAL ERR IN PROFILE`);
+            }
         });
     }
 }

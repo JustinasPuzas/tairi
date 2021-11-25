@@ -50,7 +50,6 @@ class DiscordPage {
         const targetUserName = this.targetMember.user.username + "#" + this.targetMember.user.discriminator;
         const targetAvatarUrl = this.targetMember.user.avatarURL() || this.authorMember.user.defaultAvatarURL;
         const targetBannerUrl = this.targetMember.user.bannerURL({ size: 512, dynamic: true }) || this.targetMember.guild.bannerURL({ size: 512 }) || this.targetMember.guild.iconURL({ size: 128 });
-        console.log(targetBannerUrl);
         const authorNickName = this.authorMember.nickname ? this.authorMember.nickname : this.authorMember.user.username;
         const authorAvatarUrl = this.authorMember.avatarURL() || this.authorMember.user.avatarURL() || this.authorMember.user.defaultAvatarURL;
         const accountAge = this.targetMember.user.createdAt;

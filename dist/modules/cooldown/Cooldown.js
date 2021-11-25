@@ -22,7 +22,6 @@ class CoolDown {
     }
     isOnCoolDown(userId, channelId) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(this.onCoolDown);
             const channel = this.onCoolDown.get(channelId);
             if (!channel)
                 return false;
@@ -44,7 +43,6 @@ class CoolDown {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.onCoolDown.get(channelId)) {
-                console.log(`No Channel`);
                 this.onCoolDown.set(channelId, new Map());
             }
             if (!((_a = this.onCoolDown.get(channelId)) === null || _a === void 0 ? void 0 : _a.get(userId))) {

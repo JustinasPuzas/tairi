@@ -21,6 +21,8 @@ const HomePage_1 = __importDefault(require("./Pages/HomePage"));
 const DiscordPage_1 = __importDefault(require("./Pages/DiscordPage"));
 const message_1 = __importDefault(require("../../database/schemas/message"));
 const pretty_ms_1 = __importDefault(require("pretty-ms"));
+const reputationConfig_1 = __importDefault(require("../../database/schemas/reputationConfig"));
+const config_1 = __importDefault(require("../../config"));
 class Profile {
     // default active time 30s 
     // each interaction +30s
@@ -32,18 +34,19 @@ class Profile {
         this.interactionCommand = new InteractionCommand_1.default(this);
         this.textCommand = new TextCommand_1.default(this);
         this.openDisplayIn = new Map();
-        console.log(`PROFILE`);
+        this.loadData();
     }
     executeCommand(authorMember, targetMember, request, client) {
         return __awaiter(this, void 0, void 0, function* () {
             const reputationData = this.getReputation(targetMember.id);
             const memberData = client.getMember(targetMember);
             const memberMessageCount = this.getMessageCount(targetMember.id);
+            const reputationCoolDown = this.getReputationCooldown(targetMember.id);
             if (yield this.checkCoolDown(authorMember.id, request.channelId, request))
                 return;
             this.createCoolDown(authorMember.id, request.channelId);
-            const results = yield Promise.all([reputationData, memberData, memberMessageCount, yield targetMember.user.fetch()]);
-            const reputationPage = new ReputationPage_1.default(authorMember, targetMember, results[0]);
+            const results = yield Promise.all([reputationData, memberData, memberMessageCount, reputationCoolDown, yield targetMember.user.fetch()]);
+            const reputationPage = new ReputationPage_1.default(authorMember, targetMember, results[0], results[3]);
             const navActionRow = this.buildNavActionRow(reputationPage.reputationCount);
             const discordPage = new DiscordPage_1.default(authorMember, targetMember);
             const homePage = new HomePage_1.default(authorMember, targetMember, results[1], reputationPage, results[2]);
@@ -78,6 +81,21 @@ class Profile {
     getMessageCount(discordId) {
         return __awaiter(this, void 0, void 0, function* () {
             return (yield message_1.default.countDocuments({ discordId }));
+        });
+    }
+    getReputationCooldown(authorId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const lastRecord = yield reputation_1.default.findOne({ authorId }).sort({ timeStamp: -1 });
+            if (!lastRecord)
+                return null;
+            const timeStamp = new Date(lastRecord.timeStamp);
+            const currentTime = new Date(Date.now());
+            const diff = (timeStamp.getTime() + this.reputationConfig.coolDown) - currentTime.getTime();
+            console.log(timeStamp.getTime(), this.reputationConfig.coolDown, currentTime.getTime());
+            if (diff > 0)
+                return diff;
+            else
+                return null;
         });
     }
     buildNavActionRow(reputation) {
@@ -139,6 +157,11 @@ class Profile {
             }), diff);
             return true;
             // save active windows and delete them ignore whiteListed Cannels hardCode in
+        });
+    }
+    loadData() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.reputationConfig = yield reputationConfig_1.default.findOne({ guildId: config_1.default.guildId });
         });
     }
 }

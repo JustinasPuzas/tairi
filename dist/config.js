@@ -5,6 +5,6 @@ const config = {
     clientId: "902275830078644224",
     dataBase: "mongodb://localhost/loungeTest",
     prefix: "+",
-    globalCoolDown: 10 * 1000, // in miliseconds
+    globalCoolDown: 3 * 1000, // in miliseconds
 };
 exports.default = config;

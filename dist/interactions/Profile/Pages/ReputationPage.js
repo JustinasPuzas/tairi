@@ -14,8 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = __importDefault(require("discord.js"));
 const reputation_1 = __importDefault(require("../../../database/schemas/reputation"));
+const pretty_ms_1 = __importDefault(require("pretty-ms"));
 class ReputationPage {
-    constructor(authorMember, targetMember, reputationData) {
+    constructor(authorMember, targetMember, reputationData, reputationCoolDown) {
         this.name = "reputationPage";
         this.positiveReputationCount = 0;
         this.negativeReputationCount = 0;
@@ -26,6 +27,7 @@ class ReputationPage {
         this.targetMember = targetMember;
         this.authorMember = authorMember;
         this.reputationList = reputationData;
+        this.reputationCoolDown = reputationCoolDown;
         this.loadData();
         this.updateEmbed();
     }
@@ -108,7 +110,14 @@ class ReputationPage {
         const color = this.targetMember.displayHexColor;
         const userName = this.targetMember.nickname ? this.targetMember.nickname : this.targetMember.user.username;
         const authorFooter = this.reputationWithCommentsList.length <= 10 ? userName : `Page: ${this.pageId + 1}/${Math.ceil(this.reputationWithCommentsList.length / 10)}`;
-        let description = `***+REP:*** **${this.positiveReputationCount}** | ***-REP:*** **${this.negativeReputationCount}**\n***Viso:*** **${this.positiveReputationCount + this.negativeReputationCount}**\n`;
+        let description = `***+REP:*** **${this.positiveReputationCount}** | ***-REP:*** **${this.negativeReputationCount}**\n***Viso:*** **${this.positiveReputationCount + this.negativeReputationCount}**  | `;
+        console.log(this.reputationCoolDown);
+        if (this.targetMember.id == this.authorMember.id) {
+            description += this.reputationCoolDown ? `${(0, pretty_ms_1.default)(this.reputationCoolDown, { compact: true })}\n` : "<:plus:911929035838357505>\n";
+        }
+        else {
+            description += this.reputationCoolDown ? "\n" : `<:plus:911929035838357505>\n`;
+        }
         const embed = new discord_js_1.default.MessageEmbed()
             .setTitle(`${userName} | REPUTACIJA`)
             .setThumbnail(`${avatarUrl}`);
@@ -133,7 +142,6 @@ class ReputationPage {
                 .find({ discordId })
                 .sort({ timeStamp: -1 });
             this.reputationWithCommentsList = this.reputationList.filter((doc) => doc.content);
-            console.log(this.reputationWithCommentsList);
             this.reputationList.forEach((reputation) => {
                 reputation.positive ? positiveReputation++ : negativeReputation++;
             });
@@ -153,7 +161,6 @@ class ReputationPage {
             ;
             return doc.content;
         });
-        console.log(this.reputationWithCommentsList);
         this.positiveReputationCount = positiveReputation;
         this.negativeReputationCount = negativeReputation;
         this.reputationCount = positiveReputation - negativeReputation;

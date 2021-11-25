@@ -26,7 +26,6 @@ class InteractionCommand {
     }
     executeCommand(interaction, client) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(this.interactionCommands);
             const command = this.interactionCommands.get(interaction.commandName);
             if (!command)
                 throw new Error("No such command");

@@ -36,7 +36,6 @@ class ProfileTextCommand {
             else {
                 yield this.Parent.executeCommand(authorMember, authorMember, message, client);
             }
-            console.log(args);
             setTimeout(() => __awaiter(this, void 0, void 0, function* () {
                 yield message.delete().catch(err => console.log(err));
             }), 60 * 1000);

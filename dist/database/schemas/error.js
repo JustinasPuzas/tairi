@@ -10,7 +10,6 @@ const errorDb = (0, mongoose_1.model)("Error", new mongoose_1.Schema({
         type: String,
         required: true,
         default: config_1.default.guildId,
-        unique: true,
     },
     channelId: {
         type: String,
@@ -20,9 +19,21 @@ const errorDb = (0, mongoose_1.model)("Error", new mongoose_1.Schema({
         type: String,
         required: false
     },
+    content: {
+        type: String,
+        required: false
+    },
+    path: {
+        type: String,
+        required: true,
+    },
     errorMessage: {
         type: String,
         required: true,
     },
+    timeStamp: {
+        type: Date,
+        required: true,
+    }
 }));
 exports.default = errorDb;

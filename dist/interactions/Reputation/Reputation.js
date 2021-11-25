@@ -86,7 +86,7 @@ class Reputation {
             yield this.loadData();
             const diff = (timeStamp.getTime() + this.reputationConfig.coolDown) - currentTime.getTime();
             if (diff > 0)
-                throw new Error(`Galesite duoti reputacija uz ${(0, pretty_ms_1.default)(diff, { compact: true })}`);
+                throw new Error(`Galesite duoti reputacija už ${(0, pretty_ms_1.default)(diff, { compact: true })}`);
         });
     }
     giveReputation(authorId, discordId, content, positive) {
