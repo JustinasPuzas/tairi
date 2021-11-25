@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = __importDefault(require("discord.js"));
 const config_1 = __importDefault(require("../../config"));
+const reputation_1 = __importDefault(require("../../database/schemas/reputation"));
+const pretty_ms_1 = __importDefault(require("pretty-ms"));
 class ReputationTextCommand {
     constructor(mainClass) {
         this.name = ['rep'];
@@ -32,9 +34,30 @@ class ReputationTextCommand {
             const authorMember = guild.members.cache.get(authorId);
             const positive = message.content.startsWith(this.prefix[0]) ? true : false;
             let targetId = args[1];
+            if (!args[1]) { // cd check
+                const title = positive ? "+" : "-";
+                const emote = positive ? "<:plus:911929035838357505>" : "<:minus2:911930596530454539>";
+                const embed = new discord_js_1.default.MessageEmbed()
+                    .setTitle(`${title}REP`);
+                const coolDown = yield this.checkCoolDown(authorMember.id);
+                if (coolDown) {
+                    embed.setDescription(`Galėsite naudoti už **${(0, pretty_ms_1.default)(coolDown)}**`)
+                        .setColor("BLURPLE");
+                }
+                else {
+                    embed.setDescription(`Turite laisvą reputacijos tašką ${emote} \nnaudojimas:\n**+rep @mention komentaras\n-rep @mention komentaras**\narba\n**/rep plus\n/rep minus**`)
+                        .setColor("GREEN");
+                }
+                const response = yield message.reply({ embeds: [embed] });
+                setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                    yield message.delete().catch(err => console.log(err));
+                    yield response.delete().catch(err => console.log(err));
+                }), 15 * 1000);
+                return;
+            }
             try {
-                this.verifyInputs(targetId);
                 targetId = targetId.replace(/\D/g, "");
+                this.verifyInputs(targetId);
             }
             catch (err) {
                 console.log(err);
@@ -61,6 +84,21 @@ class ReputationTextCommand {
                 console.log(err);
                 yield this.executionError(message, err);
             }
+        });
+    }
+    checkCoolDown(authorId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const lastRecord = yield reputation_1.default.findOne({ authorId }).sort({ timeStamp: -1 });
+            if (!lastRecord)
+                return null;
+            const timeStamp = new Date(lastRecord.timeStamp);
+            const currentTime = new Date(Date.now());
+            const diff = (timeStamp.getTime() + this.Parent.reputationConfig.coolDown) - currentTime.getTime();
+            console.log(timeStamp.getTime(), this.Parent.reputationConfig.coolDown, currentTime.getTime());
+            if (diff > 0)
+                return diff;
+            else
+                return null;
         });
     }
     badInputs(message, error) {
