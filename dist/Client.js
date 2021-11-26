@@ -104,11 +104,7 @@ class Client extends discord_js_1.default.Client {
             const content = message.content;
             for (let command of this._commands) {
                 if (this._maintenanceMode == false && command.maintenance == true)
-                    return;
-                if (command.maintenance != true) {
-                    const userId = message.author.id;
-                    const channelId = message.channelId;
-                }
+                    continue; // skip command witch requires maintenanceMode
                 if (command.prefix) {
                     if (command.prefix.includes(content[0])) {
                         const args = this.parseArgs(message.content, content[0]);
@@ -122,6 +118,7 @@ class Client extends discord_js_1.default.Client {
                                 }
                                 this.cDM.createCoolDown(userId, channelId);
                                 yield command.runCommand(args, message, this);
+                                break;
                             }
                             catch (err) {
                                 console.error(err);
@@ -142,6 +139,7 @@ class Client extends discord_js_1.default.Client {
                                 }
                                 this.cDM.createCoolDown(userId, channelId);
                                 yield command.runCommand(args, message, this);
+                                break;
                             }
                             catch (err) {
                                 console.error(err);

@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("../../config"));
+const Description_1 = __importDefault(require("./Settings/Description"));
 //import Settings from './Settings/Settings';
 class ProfileInteraction {
     constructor(mainClass) {
@@ -52,16 +53,16 @@ class ProfileInteraction {
             }
             catch (err) {
             }
-            if (interaction.options.getSubcommand()) {
-                console.log(interaction.options.getSubcommand());
-                yield this.Parent.executeCommand(authorMember, targetMember, interaction, client);
-            }
-            else if (interaction.options.getSubcommandGroup()) {
-                console.log(interaction.options.getSubcommandGroup());
-                yield this.Parent.executeCommand(authorMember, targetMember, interaction, client);
-            }
-            else {
-                console.log(`FATAL ERR IN PROFILE`);
+            const subCommand = interaction.options.getSubcommand();
+            switch (subCommand) {
+                case "view":
+                    yield this.Parent.executeCommand(authorMember, targetMember, interaction, client);
+                    break;
+                case "description":
+                    const description = new Description_1.default(authorMember, interaction, client);
+                    break;
+                default:
+                    break;
             }
         });
     }
