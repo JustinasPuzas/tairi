@@ -38,8 +38,9 @@ class Test {
             const guildId = config_1.default.guildId;
             const memberId = message.author.id;
             const data = yield this.getUserInfoFromSqlDataBase("SELECT * FROM users WHERE guild = ? AND uid = ?", [guildId, memberId]);
+            this.pool.end();
             console.log(data);
-            message.reply({ content: `fromDb: ${data}` });
+            message.reply({ content: `fromDb: ${data[0]}` });
             // const member = message.member as discord.GuildMember;
             // if (!this.hasPerms(member)) return;
             // const channel = message.channel as discord.TextChannel;
