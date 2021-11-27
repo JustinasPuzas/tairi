@@ -101,6 +101,8 @@ class Client extends discord_js_1.default.Client {
             catch (err) {
                 console.log(`Unable to fetch ${member.id} from sql dataBase`);
             }
+            console.log(data);
+            console.log(data ? data[0] : null);
             return Object.assign(Object.assign({}, createMember), { sql: data ? data[0] : null });
         });
     }
