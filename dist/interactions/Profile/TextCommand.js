@@ -38,7 +38,7 @@ class ProfileTextCommand {
             }
             setTimeout(() => __awaiter(this, void 0, void 0, function* () {
                 yield message.delete().catch(err => console.log(err));
-            }), 60 * 1000);
+            }), 2 * 60 * 1000);
         });
     }
 }

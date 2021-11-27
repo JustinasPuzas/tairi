@@ -18,7 +18,6 @@ const discord_js_1 = __importDefault(require("discord.js"));
 const TextCommand_1 = __importDefault(require("./TextCommand"));
 const reputation_1 = __importDefault(require("../../database/schemas/reputation"));
 const HomePage_1 = __importDefault(require("./Pages/HomePage"));
-const DiscordPage_1 = __importDefault(require("./Pages/DiscordPage"));
 const message_1 = __importDefault(require("../../database/schemas/message"));
 const pretty_ms_1 = __importDefault(require("pretty-ms"));
 const reputationConfig_1 = __importDefault(require("../../database/schemas/reputationConfig"));
@@ -48,28 +47,35 @@ class Profile {
             const results = yield Promise.all([reputationData, memberData, memberMessageCount, reputationCoolDown, yield targetMember.user.fetch()]);
             const reputationPage = new ReputationPage_1.default(authorMember, targetMember, results[0], results[3]);
             const navActionRow = this.buildNavActionRow(reputationPage.reputationCount);
-            const discordPage = new DiscordPage_1.default(authorMember, targetMember);
             const homePage = new HomePage_1.default(authorMember, targetMember, results[1], reputationPage, results[2]);
             const payload = homePage.getPage(navActionRow);
             const response = yield request.reply(Object.assign(Object.assign({}, payload), { fetchReply: true }));
             const collector = response.createMessageComponentCollector({
-                componentType: "BUTTON",
+                //componentType: "BUTTON",
                 time: 2 * 60 * 1000,
             });
+            let interactionReply = null;
             collector.on("collect", (i) => __awaiter(this, void 0, void 0, function* () {
                 if (i.user.id != authorMember.id) {
                     yield i.reply({ content: `UwU Tikrink profilius su /profile view arba +profile`, ephemeral: true });
                     return;
                 }
                 const handlers = [
-                    yield this.buttonClickHandler(i.customId, { reputationPage, homePage, discordPage }, navActionRow),
+                    yield this.buttonClickHandler(i.customId, { reputationPage, homePage }, navActionRow),
+                    i.isSelectMenu() ? yield homePage.buttonClickHandler(i, navActionRow) : null,
                     yield reputationPage.buttonClickHandler(i.customId, navActionRow),
                 ].filter(handler => handler != null);
+                interactionReply = i;
                 if (handlers[0])
                     yield i.update(handlers[0]);
             }));
+            collector.on("dispose", (i) => __awaiter(this, void 0, void 0, function* () {
+                console.log("DISPOSE");
+                yield i.deleteReply();
+            }));
             collector.on("end", (i) => __awaiter(this, void 0, void 0, function* () {
-                yield response.delete().catch(err => console.error(err));
+                yield (yield response.fetch()).delete().catch(err => console.error(err));
+                //await response.delete().catch(err => console.error(err))
             }));
         });
     }
@@ -116,7 +122,7 @@ class Profile {
             .setLabel("Discord")
             .setStyle("SECONDARY");
         //.setEmoji("<a:discord:911592752658128926>")
-        return new discord_js_1.default.MessageActionRow().addComponents([homePage, reputationPage, discordPage]);
+        return new discord_js_1.default.MessageActionRow().addComponents([homePage, reputationPage]); //.addComponents([homePage, reputationPage, discordPage]);
     }
     buttonClickHandler(customId, pages, navRow) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -126,8 +132,8 @@ class Profile {
                     return yield homePage.getPage(navRow);
                 case "reputationPage":
                     return yield reputationPage.getPage(navRow);
-                case "discordPage":
-                    return yield discordPage.getPage(navRow);
+                // case "discordPage":
+                //   return await discordPage.getPage(navRow)
                 default:
                     return null;
             }

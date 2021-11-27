@@ -19,6 +19,7 @@ const member_1 = __importDefault(require("./database/schemas/member"));
 const config_1 = __importDefault(require("./config"));
 const message_1 = __importDefault(require("./database/schemas/message"));
 const Cooldown_1 = __importDefault(require("./modules/cooldown/Cooldown"));
+const mysql_1 = __importDefault(require("mysql"));
 const fs = require("fs").promises;
 class Client extends discord_js_1.default.Client {
     constructor() {
@@ -29,6 +30,7 @@ class Client extends discord_js_1.default.Client {
         this._commands = [];
         this.Rules = new rules_1.default();
         this.InteractionCommands = new interactions_1.default(this);
+        this.pool = this.conntentToSqlDataBase();
         this.cDM = new Cooldown_1.default();
     }
     getMaintenanceMode() {
@@ -36,6 +38,18 @@ class Client extends discord_js_1.default.Client {
     }
     setMaintenanceMode(value) {
         this._maintenanceMode = value;
+    }
+    conntentToSqlDataBase() {
+        const details = {
+            host: "91.211.247.59",
+            user: "discord",
+            password: "cHiRMSudhpzdeeAzF4taBxlaDdo6NAip",
+            port: 3307,
+            database: "lounge",
+            charset: "utf8mb4_unicode_ci",
+            connectionLimit: 100
+        };
+        return mysql_1.default.createPool(details);
     }
     runInteractionCommand(command) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -47,6 +61,23 @@ class Client extends discord_js_1.default.Client {
             // }
             this.cDM.createCoolDown(userId, channelId);
             yield this.InteractionCommands.executeCommand(command, this);
+        });
+    }
+    getMemberSql(q, v) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let stacktrace = new Error();
+            return new Promise((res, rej) => {
+                this.pool.query(q, v, (err, data) => {
+                    //console.log(stacktrace);
+                    if (err) {
+                        console.log(`ERROR CONECTING TO DV O.o`);
+                        //this.logger.error(Object.assign(err,{fullTrace:stacktrace}));
+                        return rej(err);
+                    }
+                    else
+                        res(data);
+                });
+            });
         });
     }
     getMember(member) {
@@ -63,7 +94,14 @@ class Client extends discord_js_1.default.Client {
                 roles: [...member.roles.cache.keys()],
                 firstTimeJoined,
             }));
-            return createMember;
+            let data = null;
+            try {
+                data = yield this.getMemberSql("SELECT * FROM users WHERE guild = ? AND uid = ?", [config_1.default.guildId, member.id]);
+            }
+            catch (err) {
+                console.log(`Unable to fetch ${member.id} from sql dataBase`);
+            }
+            return Object.assign(Object.assign({}, createMember), { sql: data ? data[0] : null });
         });
     }
     logMessage(message) {

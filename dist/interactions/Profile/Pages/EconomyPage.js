@@ -13,12 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = __importDefault(require("discord.js"));
-const pretty_ms_1 = __importDefault(require("pretty-ms"));
-class DiscordPage {
-    constructor(authorMember, targetMember) {
+class EconomyPage {
+    constructor(authorMember, targetMember, memberData) {
         this.page = { embeds: [], components: [] };
         this.targetMember = targetMember;
         this.authorMember = authorMember;
+        this.memberData = memberData;
     }
     getPage(navRow, selectMenu) {
         this.selectMenu = selectMenu;
@@ -50,13 +50,15 @@ class DiscordPage {
         const targetBannerUrl = this.targetMember.user.bannerURL({ size: 512, dynamic: true }) || this.targetMember.guild.bannerURL({ size: 512 }) || this.targetMember.guild.iconURL({ size: 128 });
         const authorNickName = this.authorMember.nickname ? this.authorMember.nickname : this.authorMember.user.username;
         const authorAvatarUrl = this.authorMember.avatarURL() || this.authorMember.user.avatarURL() || this.authorMember.user.defaultAvatarURL;
-        const accountAge = this.targetMember.user.createdAt;
+        const { money, gold, xp } = this.memberData.sql;
         const color = this.targetMember.displayHexColor;
         const embed = new discord_js_1.default.MessageEmbed()
             .setTitle(`${targetUserName} Discord Info`)
             .setThumbnail(`${targetAvatarUrl}`)
             .setFields([
-            { name: `Paskyros amžius:`, value: `📆 **${(0, pretty_ms_1.default)(Math.floor((Date.now() - accountAge.getTime()) / (60 * 60 * 1000)) * 60 * 60 * 1000)}**`, inline: true },
+            { name: "Auksas", value: `<:auksas:889548108160172062> **${gold}**`, inline: true },
+            { name: "Pinigai", value: `💶 **${money}**`, inline: true },
+            { name: "XP", value: `🌟 **${xp}**`, inline: true }
             //{name: `Id: `, value: `**${this.targetMember.id}**`, inline: true},
             //{name: `Žinutės:`, value: `📨 **${this.messageCount}**`, inline: true},
         ])
@@ -71,4 +73,4 @@ class DiscordPage {
         return __awaiter(this, void 0, void 0, function* () { });
     }
 }
-exports.default = DiscordPage;
+exports.default = EconomyPage;
