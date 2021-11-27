@@ -83,6 +83,18 @@ class Client extends discord_js_1.default.Client {
     getMember(member) {
         return __awaiter(this, void 0, void 0, function* () {
             const findMember = yield member_1.default.findOne({ discordId: member.id });
+            let data = null;
+            try {
+                data = yield this.getMemberSql("SELECT * FROM users WHERE guild = ? AND uid = ?", [config_1.default.guildId, member.id]);
+            }
+            catch (err) {
+                console.log(`Unable to fetch ${member.id} from sql dataBase`);
+            }
+            console.log(`DATA FRom SQL`);
+            console.log(data);
+            console.log(data ? data[0] : null);
+            data = data ? data[0] : null;
+            findMember.sql = data;
             if (findMember)
                 return findMember;
             const firstTimeJoined = member.joinedAt
@@ -94,17 +106,9 @@ class Client extends discord_js_1.default.Client {
                 roles: [...member.roles.cache.keys()],
                 firstTimeJoined,
             }));
-            let data = null;
-            try {
-                data = yield this.getMemberSql("SELECT * FROM users WHERE guild = ? AND uid = ?", [config_1.default.guildId, member.id]);
-            }
-            catch (err) {
-                console.log(`Unable to fetch ${member.id} from sql dataBase`);
-            }
-            console.log(`DATA FOR SQL`);
-            console.log(data);
-            console.log(data ? data[0] : null);
-            return Object.assign(Object.assign({}, createMember), { sql: data ? data[0] : null });
+            data = data ? data[0] : null;
+            createMember.sql = data;
+            return createMember;
         });
     }
     logMessage(message) {
