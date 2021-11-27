@@ -102,6 +102,7 @@ class HomePage {
             case "bank":
                 this.pageId = "bank";
                 navRow.components[0].setLabel("Ekonomika");
+                this.updateButtons(navRow);
                 return this.economyPage.getPage(navRow, this.selectMenu);
             default:
                 return null;
