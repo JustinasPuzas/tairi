@@ -100,7 +100,7 @@ class HomePage {
                 this.updateButtons(navRow);
                 return this.discordPage.getPage(navRow, this.selectMenu);
             case "bank":
-                this.pageId = "discord";
+                this.pageId = "bank";
                 navRow.components[0].setLabel("Ekonomika");
                 return this.economyPage.getPage(navRow, this.selectMenu);
             default:
