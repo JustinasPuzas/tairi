@@ -90,9 +90,6 @@ class Client extends discord_js_1.default.Client {
             catch (err) {
                 console.log(`Unable to fetch ${member.id} from sql dataBase`);
             }
-            console.log(`DATA FRom SQL`);
-            console.log(data);
-            console.log(data ? data[0] : null);
             data = data ? data[0] : null;
             findMember.sql = data;
             if (findMember)

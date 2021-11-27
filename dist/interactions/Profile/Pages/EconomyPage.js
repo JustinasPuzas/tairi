@@ -45,15 +45,15 @@ class EconomyPage {
         });
     }
     updateEmbed() {
-        const targetUserName = this.targetMember.user.username + "#" + this.targetMember.user.discriminator;
-        const targetAvatarUrl = this.targetMember.user.avatarURL() || this.authorMember.user.defaultAvatarURL;
+        const targetNickName = this.targetMember.nickname ? this.targetMember.nickname : this.targetMember.user.username;
+        const targetAvatarUrl = this.targetMember.avatarURL() || this.targetMember.user.avatarURL() || this.targetMember.user.defaultAvatarURL;
         const targetBannerUrl = this.targetMember.user.bannerURL({ size: 512, dynamic: true }) || this.targetMember.guild.bannerURL({ size: 512 }) || this.targetMember.guild.iconURL({ size: 128 });
         const authorNickName = this.authorMember.nickname ? this.authorMember.nickname : this.authorMember.user.username;
         const authorAvatarUrl = this.authorMember.avatarURL() || this.authorMember.user.avatarURL() || this.authorMember.user.defaultAvatarURL;
         const { money, gold, xp } = this.memberData.sql;
         const color = this.targetMember.displayHexColor;
         const embed = new discord_js_1.default.MessageEmbed()
-            .setTitle(`${targetUserName} Discord Info`)
+            .setTitle(`${targetNickName} | Ekonomika`)
             .setThumbnail(`${targetAvatarUrl}`)
             .setFields([
             { name: "Auksas", value: `<:auksas:889548108160172062> **${gold}**`, inline: true },

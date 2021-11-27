@@ -53,7 +53,7 @@ class DiscordPage {
         const accountAge = this.targetMember.user.createdAt;
         const color = this.targetMember.displayHexColor;
         const embed = new discord_js_1.default.MessageEmbed()
-            .setTitle(`${targetUserName} Discord Info`)
+            .setTitle(`${targetUserName} | Discord Info`)
             .setThumbnail(`${targetAvatarUrl}`)
             .setFields([
             { name: `Paskyros amžius:`, value: `📆 **${(0, pretty_ms_1.default)(Math.floor((Date.now() - accountAge.getTime()) / (60 * 60 * 1000)) * 60 * 60 * 1000)}**`, inline: true },

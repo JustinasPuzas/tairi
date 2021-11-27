@@ -119,7 +119,7 @@ class HomePage {
         const reputationEmote = reputationCount >= 0 ? "<:plusIcon:911780569694740510>" : "<:minusIcon:911780550983970836>";
         const color = this.targetMember.displayHexColor;
         const embed = new discord_js_1.default.MessageEmbed()
-            .setTitle(`${targetNickName} Profilis`)
+            .setTitle(`${targetNickName} | Profilis`)
             .setThumbnail(`${targetAvatarUrl}`)
             .setFields([
             { name: `Narys jau`, value: `📆 **${(0, pretty_ms_1.default)(Date.now() - targetFirstTimeJoined.getTime(), { compact: true })}**`, inline: true },
