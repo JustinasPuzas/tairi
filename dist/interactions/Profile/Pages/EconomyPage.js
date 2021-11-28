@@ -77,7 +77,7 @@ class EconomyPage {
             .setFields([
             { name: "Auksas", value: `<:auksas:889548108160172062> **${gold}**`, inline: true },
             { name: "Pinigai", value: `💶 **${money}**`, inline: true },
-            { name: "XP", value: `💡 **${xp}/${nextLevelIn}**` },
+            { name: "Patirtis", value: `💡 **${xp}/${nextLevelIn}**`, inline: true, },
             { name: "Lygis", value: `🌟 **${currentLevel}**`, inline: true }
             //{name: `Id: `, value: `**${this.targetMember.id}**`, inline: true},
             //{name: `Žinutės:`, value: `📨 **${this.messageCount}**`, inline: true},
