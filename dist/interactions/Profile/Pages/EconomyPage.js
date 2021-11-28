@@ -16,6 +16,23 @@ const discord_js_1 = __importDefault(require("discord.js"));
 class EconomyPage {
     constructor(authorMember, targetMember, memberData) {
         this.page = { embeds: [], components: [] };
+        this.equate = (level) => {
+            return level * 30;
+        };
+        this.toXP = (level) => {
+            let xp = 0;
+            for (let i = 1; i < level; i++)
+                xp += this.equate(i);
+            return xp;
+        };
+        this.toLevel = (xp) => {
+            if (xp == 0)
+                return 1;
+            let level = 1;
+            while (this.toXP(level) <= xp)
+                level++;
+            return level - 1;
+        };
         this.targetMember = targetMember;
         this.authorMember = authorMember;
         this.memberData = memberData;
@@ -51,6 +68,8 @@ class EconomyPage {
         const authorNickName = this.authorMember.nickname ? this.authorMember.nickname : this.authorMember.user.username;
         const authorAvatarUrl = this.authorMember.avatarURL() || this.authorMember.user.avatarURL() || this.authorMember.user.defaultAvatarURL;
         const { money, gold, xp } = this.memberData.sql;
+        const currentLevel = this.toLevel(xp);
+        const nextLevelIn = this.toXP(currentLevel + 1);
         const color = this.targetMember.displayHexColor;
         const embed = new discord_js_1.default.MessageEmbed()
             .setTitle(`${targetNickName} | Ekonomika`)
@@ -58,7 +77,8 @@ class EconomyPage {
             .setFields([
             { name: "Auksas", value: `<:auksas:889548108160172062> **${gold}**`, inline: true },
             { name: "Pinigai", value: `💶 **${money}**`, inline: true },
-            { name: "XP", value: `🌟 **${xp}**`, inline: true }
+            { name: "XP", value: `💡 **${xp}/${nextLevelIn}**` },
+            { name: "Lygis", value: `🌟 **${currentLevel}**`, inline: true }
             //{name: `Id: `, value: `**${this.targetMember.id}**`, inline: true},
             //{name: `Žinutės:`, value: `📨 **${this.messageCount}**`, inline: true},
         ])
