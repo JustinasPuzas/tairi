@@ -49,24 +49,33 @@ class HomePage {
         }
     }
     updateButtons(navRow) {
-        this.buildActionRow();
-        const row = new discord_js_1.default.MessageActionRow().addComponents([this.selectMenu]);
-        this.page.components = [navRow, row];
+        return __awaiter(this, void 0, void 0, function* () {
+            this.buildActionRow();
+            const row = new discord_js_1.default.MessageActionRow().addComponents([this.selectMenu]);
+            this.page.components = [navRow, row];
+        });
     }
     buildActionRow() {
+        console.log(this.targetMemberAvatarEmote);
         let options = [
             {
+                emoji: "<:lounge:914670459147124796>",
+                default: this.pageId == "profile" ? true : false,
                 label: 'Lounge Profilis',
                 description: 'Lounge Profilio informacija',
                 value: 'profile',
             },
             this.memberData.sql ?
                 {
+                    default: this.pageId == "bank" ? true : false,
+                    emoji: "<:auksas:889548108160172062>",
                     label: 'Lounge Ekonomika',
                     description: 'Lounge Ekonomikos informacija',
                     value: 'bank',
                 } : null,
             {
+                default: this.pageId == "discord" ? true : false,
+                emoji: "<:discordwhite:914651582338043974>",
                 label: 'Discord Profilis',
                 description: 'Discord Profilio informacija',
                 value: 'discord',
@@ -91,17 +100,17 @@ class HomePage {
         switch (value) {
             case "profile":
                 this.pageId = "profile";
-                navRow.components[0].setLabel("Profilis");
+                navRow.components[0].setLabel("Profilis").setEmoji("<:lounge:914670459147124796>");
                 return this.getPage(navRow);
             case "discord":
                 this.pageId = "discord";
                 //this.selectMenu.setPlaceholder("Discord");
-                navRow.components[0].setLabel("Discord");
+                navRow.components[0].setLabel("Discord").setEmoji("<:discordwhite:914651582338043974>");
                 this.updateButtons(navRow);
                 return this.discordPage.getPage(navRow, this.selectMenu);
             case "bank":
                 this.pageId = "bank";
-                navRow.components[0].setLabel("Ekonomika");
+                navRow.components[0].setLabel("Ekonomika").setEmoji("<:auksas:889548108160172062>");
                 this.updateButtons(navRow);
                 return this.economyPage.getPage(navRow, this.selectMenu);
             default:

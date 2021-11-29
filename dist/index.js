@@ -48,6 +48,9 @@ client.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, functi
         console.log(err);
     }
 }));
+client.on("rateLimit", msg => {
+    console.log(msg);
+});
 client.on("messageUpdate", (oldMessage, newMessage) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         oldMessage = yield oldMessage.fetch();

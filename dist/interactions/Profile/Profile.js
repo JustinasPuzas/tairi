@@ -44,6 +44,7 @@ class Profile {
             if (yield this.checkCoolDown(authorMember.id, request.channelId, request))
                 return;
             this.createCoolDown(authorMember.id, request.channelId);
+            //const targetMemberAvatarEomte = this.createTargetMemberAvatarEmotr(targetMember)
             const results = yield Promise.all([reputationData, memberData, memberMessageCount, reputationCoolDown, yield targetMember.user.fetch()]);
             const reputationPage = new ReputationPage_1.default(authorMember, targetMember, results[0], results[3]);
             const navActionRow = this.buildNavActionRow(reputationPage.reputationCount);
@@ -108,15 +109,16 @@ class Profile {
         const homePage = new discord_js_1.default.MessageButton()
             .setCustomId("homePage")
             .setLabel("Profilis")
-            .setStyle("PRIMARY");
+            .setStyle("PRIMARY")
+            .setEmoji("<:lounge:914670459147124796>");
         const reputationPage = new discord_js_1.default.MessageButton()
             .setCustomId("reputationPage")
             .setLabel("Reputacija")
             .setStyle("PRIMARY");
         if (reputation > 0)
-            reputationPage.setStyle("SUCCESS");
+            reputationPage.setStyle("SUCCESS").setEmoji("<:plus:911929035838357505>");
         else if (reputation < 0)
-            reputationPage.setStyle("DANGER");
+            reputationPage.setStyle("DANGER").setEmoji("<:minus2:911930596530454539>");
         const discordPage = new discord_js_1.default.MessageButton()
             .setCustomId("discordPage")
             .setLabel("Discord")
