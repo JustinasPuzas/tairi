@@ -65,7 +65,7 @@ class ReputationTextCommand {
                 return;
             }
             const targetMember = guild.members.cache.get(targetId);
-            const content = args[2] ? args.join(" ").replace(`rep ${args[1]} `, "") : null;
+            const content = args.length > 2 ? args.join(" ").replace(`rep ${args[1]} `, "") : null;
             const roles = authorMember.roles.cache;
             try {
                 if (!targetMember)

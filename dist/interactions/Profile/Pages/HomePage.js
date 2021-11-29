@@ -56,7 +56,6 @@ class HomePage {
         });
     }
     buildActionRow() {
-        console.log(this.targetMemberAvatarEmote);
         let options = [
             {
                 emoji: "<:lounge:914670459147124796>",
