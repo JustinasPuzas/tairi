@@ -47,7 +47,7 @@ class Client extends discord_js_1.default.Client {
             port: 3307,
             database: "lounge",
             charset: "utf8mb4_unicode_ci",
-            connectionLimit: 100
+            connectionLimit: 100,
         };
         return mysql_1.default.createPool(details);
     }
@@ -90,10 +90,11 @@ class Client extends discord_js_1.default.Client {
             catch (err) {
                 console.log(`Unable to fetch ${member.id} from sql dataBase`);
             }
-            data = data ? data[0] : null;
-            findMember.sql = data;
-            if (findMember)
+            if (findMember) {
+                data = data ? data[0] : null;
+                findMember.sql = data;
                 return findMember;
+            }
             const firstTimeJoined = member.joinedAt
                 ? member.joinedAt
                 : new Date(Date.now());
