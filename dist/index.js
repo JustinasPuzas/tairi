@@ -36,7 +36,7 @@ mongoose_1.default.connect(`${config_1.default.dataBase}`);
 client.on("ready", () => __awaiter(void 0, void 0, void 0, function* () {
     // load commands
     // load integrations
-    yield client.registerParentCommands();
+    yield client.onReady();
     console.log(`Bot is ready in ${client.guilds.cache.size} guilds`);
 }));
 client.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, function* () {

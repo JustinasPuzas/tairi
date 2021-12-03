@@ -13,13 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = __importDefault(require("discord.js"));
-const rules_1 = __importDefault(require("./commands/rules/rules"));
 const interactions_1 = __importDefault(require("./interactions/interactions"));
 const member_1 = __importDefault(require("./database/schemas/member"));
 const config_1 = __importDefault(require("./config"));
 const message_1 = __importDefault(require("./database/schemas/message"));
 const Cooldown_1 = __importDefault(require("./modules/cooldown/Cooldown"));
-const mysql_1 = __importDefault(require("mysql"));
+const sql_1 = __importDefault(require("./modules/sql/sql"));
 const fs = require("fs").promises;
 class Client extends discord_js_1.default.Client {
     constructor() {
@@ -28,28 +27,22 @@ class Client extends discord_js_1.default.Client {
         this._maintenanceMode = false;
         this._prefix = config_1.default.prefix;
         this._commands = [];
-        this.Rules = new rules_1.default();
+        //Rules = new Rules();
         this.InteractionCommands = new interactions_1.default(this);
-        this.pool = this.conntentToSqlDataBase();
+        this.sqlDataBase = new sql_1.default();
         this.cDM = new Cooldown_1.default();
+    }
+    onReady() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.Guild = this.guilds.cache.get(config_1.default.guildId);
+            yield this.registerParentCommands();
+        });
     }
     getMaintenanceMode() {
         return this._maintenanceMode;
     }
     setMaintenanceMode(value) {
         this._maintenanceMode = value;
-    }
-    conntentToSqlDataBase() {
-        const details = {
-            host: "91.211.247.59",
-            user: "discord",
-            password: "cHiRMSudhpzdeeAzF4taBxlaDdo6NAip",
-            port: 3307,
-            database: "lounge",
-            charset: "utf8mb4_unicode_ci",
-            connectionLimit: 100,
-        };
-        return mysql_1.default.createPool(details);
     }
     runInteractionCommand(command) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -63,29 +56,12 @@ class Client extends discord_js_1.default.Client {
             yield this.InteractionCommands.executeCommand(command, this);
         });
     }
-    getMemberSql(q, v) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let stacktrace = new Error();
-            return new Promise((res, rej) => {
-                this.pool.query(q, v, (err, data) => {
-                    //console.log(stacktrace);
-                    if (err) {
-                        console.log(`ERROR CONECTING TO DV O.o`);
-                        //this.logger.error(Object.assign(err,{fullTrace:stacktrace}));
-                        return rej(err);
-                    }
-                    else
-                        res(data);
-                });
-            });
-        });
-    }
     getMember(member) {
         return __awaiter(this, void 0, void 0, function* () {
             const findMember = yield member_1.default.findOne({ discordId: member.id });
             let data = null;
             try {
-                data = yield this.getMemberSql("SELECT * FROM users WHERE guild = ? AND uid = ?", [config_1.default.guildId, member.id]);
+                data = yield this.sqlDataBase.getMember("SELECT * FROM users WHERE guild = ? AND uid = ?", [config_1.default.guildId, member.id]);
             }
             catch (err) {
                 console.log(`Unable to fetch ${member.id} from sql dataBase`);

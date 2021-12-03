@@ -51,6 +51,7 @@ class Profile {
             const homePage = new HomePage_1.default(authorMember, targetMember, results[1], reputationPage, results[2]);
             const payload = homePage.getPage(navActionRow);
             const response = yield request.reply(Object.assign(Object.assign({}, payload), { fetchReply: true }));
+            const responseId = response.id;
             const collector = response.createMessageComponentCollector({
                 //componentType: "BUTTON",
                 time: 2 * 60 * 1000,
@@ -75,7 +76,10 @@ class Profile {
             //   await i.deleteReply()
             // })
             collector.on("end", (i) => __awaiter(this, void 0, void 0, function* () {
-                yield (yield response.fetch()).delete().catch(err => console.error(err));
+                const channel = client.Guild.channels.cache.get(request.channelId);
+                const msg = channel.messages.cache.get(responseId);
+                yield (msg === null || msg === void 0 ? void 0 : msg.delete().catch(err => console.error(err)));
+                //await (await response.fetch()).delete().catch(err => console.error(err))
                 //await response.delete().catch(err => console.error(err))
             }));
         });
