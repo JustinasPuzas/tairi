@@ -8,10 +8,10 @@ const data = new builders_1.SlashCommandBuilder()
     .setName('plus')
     .setDescription('Duoti reputacijos tašką')
     .addUserOption(option => option.setName('username').setDescription('Vartotojo slapyvardis kuriam norite duoti reputacijos tašką').setRequired(true))
-    .addStringOption(option => option.setName('comment').setDescription('Komentaras')))
+    .addStringOption(option => option.setName('comment').setDescription('Komentaras').setRequired(true)))
     .addSubcommand(subcommand => subcommand
     .setName('minus')
     .setDescription('Atimti reputacijos tašką')
     .addUserOption(option => option.setName('username').setDescription('Vartotojo slapyvardis kuriam norite duoti neigiamą reputacijos tašką').setRequired(true))
-    .addStringOption(option => option.setName('comment').setDescription('Komentaras')));
+    .addStringOption(option => option.setName('comment').setDescription('Komentaras').setRequired(true)));
 exports.default = data;

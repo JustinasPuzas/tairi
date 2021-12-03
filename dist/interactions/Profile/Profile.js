@@ -70,10 +70,10 @@ class Profile {
                 if (handlers[0])
                     yield i.update(handlers[0]);
             }));
-            collector.on("dispose", (i) => __awaiter(this, void 0, void 0, function* () {
-                console.log("DISPOSE");
-                yield i.deleteReply();
-            }));
+            // collector.on("dispose", async (i) => {
+            //   console.log("DISPOSE");
+            //   await i.deleteReply()
+            // })
             collector.on("end", (i) => __awaiter(this, void 0, void 0, function* () {
                 yield (yield response.fetch()).delete().catch(err => console.error(err));
                 //await response.delete().catch(err => console.error(err))
