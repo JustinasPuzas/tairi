@@ -123,12 +123,7 @@ class Profile {
             reputationPage.setStyle("SUCCESS").setEmoji("<:plus:911929035838357505>");
         else if (reputation < 0)
             reputationPage.setStyle("DANGER").setEmoji("<:minus2:911930596530454539>");
-        const discordPage = new discord_js_1.default.MessageButton()
-            .setCustomId("discordPage")
-            .setLabel("Discord")
-            .setStyle("SECONDARY");
-        //.setEmoji("<a:discord:911592752658128926>")
-        return new discord_js_1.default.MessageActionRow().addComponents([homePage, reputationPage]); //.addComponents([homePage, reputationPage, discordPage]);
+        return new discord_js_1.default.MessageActionRow().addComponents([homePage, reputationPage]);
     }
     buttonClickHandler(customId, pages, navRow) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -138,8 +133,6 @@ class Profile {
                     return yield homePage.getPage(navRow);
                 case "reputationPage":
                     return yield reputationPage.getPage(navRow);
-                // case "discordPage":
-                //   return await discordPage.getPage(navRow)
                 default:
                     return null;
             }

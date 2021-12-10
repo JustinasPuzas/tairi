@@ -109,7 +109,8 @@ class ReputationPage {
         const avatarUrl = this.targetMember.avatarURL() || this.targetMember.user.avatarURL() || this.targetMember.user.defaultAvatarURL;
         const color = this.targetMember.displayHexColor;
         const userName = this.targetMember.nickname ? this.targetMember.nickname : this.targetMember.user.username;
-        const authorFooter = this.reputationWithCommentsList.length <= 10 ? userName : `Page: ${this.pageId + 1}/${Math.ceil(this.reputationWithCommentsList.length / 10)}`;
+        const authorName = this.authorMember.nickname || this.authorMember.user.username;
+        const authorFooter = this.reputationWithCommentsList.length <= 10 ? authorName : `Page: ${this.pageId + 1}/${Math.ceil(this.reputationWithCommentsList.length / 10)}`;
         let description = `***+REP:*** **${this.positiveReputationCount}** | ***-REP:*** **${this.negativeReputationCount}**\n***Viso:*** **${this.positiveReputationCount + this.negativeReputationCount}**  | `;
         console.log(this.reputationCoolDown);
         if (this.targetMember.id == this.authorMember.id) {

@@ -42,7 +42,7 @@ client.on("ready", () => __awaiter(void 0, void 0, void 0, function* () {
 client.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield client.findOneAndRunCommand(message);
-        yield client.logMessage(message);
+        yield client.messageLogger.logMessage(message);
     }
     catch (err) {
         console.log(err);
@@ -55,7 +55,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => __awaiter(void 0, void 0,
     try {
         oldMessage = yield oldMessage.fetch();
         newMessage = yield newMessage.fetch();
-        yield client.updateMessage(oldMessage, newMessage);
+        yield client.messageLogger.updateMessage(oldMessage, newMessage);
     }
     catch (err) {
         console.log(err);
@@ -63,7 +63,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => __awaiter(void 0, void 0,
 }));
 client.on("messageDelete", (message) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield client.deleteMessage(message);
+        yield client.messageLogger.deleteMessage(message);
     }
     catch (err) {
         console.log(err);

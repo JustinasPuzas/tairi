@@ -16,25 +16,30 @@ const discord_js_1 = __importDefault(require("discord.js"));
 const interactions_1 = __importDefault(require("./interactions/interactions"));
 const member_1 = __importDefault(require("./database/schemas/member"));
 const config_1 = __importDefault(require("./config"));
-const message_1 = __importDefault(require("./database/schemas/message"));
 const Cooldown_1 = __importDefault(require("./modules/cooldown/Cooldown"));
 const sql_1 = __importDefault(require("./modules/sql/sql"));
+const messageLogger_1 = __importDefault(require("./modules/messageLogger/messageLogger"));
+const Moderation_1 = __importDefault(require("./modules/moderation/Moderation"));
 const fs = require("fs").promises;
 class Client extends discord_js_1.default.Client {
     constructor() {
         super(...arguments);
-        // extending Client Class
+        // maintinance mode
         this._maintenanceMode = false;
         this._prefix = config_1.default.prefix;
-        this._commands = [];
         //Rules = new Rules();
+        //rare commands
+        this._commands = [];
+        // modules
         this.InteractionCommands = new interactions_1.default(this);
+        this.messageLogger = new messageLogger_1.default();
         this.sqlDataBase = new sql_1.default();
         this.cDM = new Cooldown_1.default();
     }
     onReady() {
         return __awaiter(this, void 0, void 0, function* () {
             this.Guild = this.guilds.cache.get(config_1.default.guildId);
+            this.moderation = new Moderation_1.default(this);
             yield this.registerParentCommands();
         });
     }
@@ -83,39 +88,6 @@ class Client extends discord_js_1.default.Client {
             data = data ? data[0] : null;
             createMember.sql = data;
             return createMember;
-        });
-    }
-    logMessage(message) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            const guildId = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.id;
-            const channelId = message.channelId;
-            const content = message.content;
-            const timeStamp = new Date(Date.now());
-            let attachments = message.attachments;
-            const discordId = message.author.id;
-            const messageId = message.id;
-            yield message_1.default.create({
-                guildId,
-                channelId,
-                messageId,
-                content,
-                timeStamp,
-                attachments,
-                discordId,
-            });
-        });
-    }
-    deleteMessage(message) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const messageId = message.id;
-            yield message_1.default.findOneAndUpdate({ messageId }, { deleted: true, deletedTimeStamp: new Date(Date.now()) });
-        });
-    }
-    updateMessage(oldMessage, newMessage) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const messageId = oldMessage.id;
-            yield message_1.default.findOneAndUpdate({ messageId }, { $push: { edits: Object.assign({}, newMessage) } });
         });
     }
     findOneAndRunCommand(message) {
