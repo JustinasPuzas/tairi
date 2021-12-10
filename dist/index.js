@@ -33,7 +33,22 @@ const client = new Client_1.default({
     partials: ['USER', 'GUILD_MEMBER', 'MESSAGE', 'CHANNEL', 'REACTION']
 });
 console.log(`mongodb://${config_1.default.dataBase.username}:${process.env.DATA_BASE_PASSWORD}@${config_1.default.dataBase.link}`);
-mongoose_1.default.connect(`mongodb://${config_1.default.dataBase.username}:${process.env.DATA_BASE_PASSWORD}@${config_1.default.dataBase.link}`);
+const options = {
+    //authMechanism: "DEFAULT",
+    user: config_1.default.dataBase.username,
+    pass: process.env.DATA_BASE_PASSWORD,
+    authSource: config_1.default.dataBase.authSource,
+    //useCreateIndex: true,
+    //useFindAndModify: false,
+    //useNewUrlParser: true,
+    //useUnifiedTopology: true,
+};
+mongoose_1.default.connect(`mongodb://${config_1.default.dataBase.link}`, options);
+// dataBase: "mongodb://localhost/edvBuild",
+// user: 'devAdmin',
+// pass: '6QF/TB_Genesis.',
+// authSource: 'admin',
+// authMechanism: 'DEFAULT',
 //mongoose.connect(`mongodb://${config.dataBase.link}`)
 client.on("ready", () => __awaiter(void 0, void 0, void 0, function* () {
     // load commands
