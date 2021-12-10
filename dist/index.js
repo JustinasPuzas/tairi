@@ -32,7 +32,9 @@ const client = new Client_1.default({
     ],
     partials: ['USER', 'GUILD_MEMBER', 'MESSAGE', 'CHANNEL', 'REACTION']
 });
-mongoose_1.default.connect(`${config_1.default.dataBase}`);
+console.log(`mongodb://${config_1.default.dataBase.username}:${process.env.DATA_BASE_PASSWORD}@${config_1.default.dataBase.link}`);
+mongoose_1.default.connect(`mongodb://${config_1.default.dataBase.username}:${process.env.DATA_BASE_PASSWORD}@${config_1.default.dataBase.link}`);
+//mongoose.connect(`mongodb://${config.dataBase.link}`)
 client.on("ready", () => __awaiter(void 0, void 0, void 0, function* () {
     // load commands
     // load integrations
