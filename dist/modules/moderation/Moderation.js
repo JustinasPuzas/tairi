@@ -51,12 +51,16 @@ class Moderation {
     unMuteMember(discordId) {
         return __awaiter(this, void 0, void 0, function* () {
             const guild = this.client.Guild;
-            const member = yield guild.members.fetch(discordId);
+            console.log(guild);
+            let member = guild.members.cache.get(discordId);
+            if (!member)
+                member = yield guild.members.fetch(discordId);
+            console.log(member);
             const memberMute = this.mutedMembers.filter((mute) => mute.isThisUser(discordId))[0];
             if (!memberMute)
                 throw new Error(`<@${discordId}> Šis vartotojas gyvas`);
             if (member)
-                yield member.roles.remove(memberMute.getData().roleId);
+                yield member.roles.remove(memberMute.getData().roleId).catch((err) => console.error(err));
             // istrina is mute listo O.o
             this.mutedMembers = this.mutedMembers.filter((mute) => !mute.isThisAuthor(discordId));
         });
@@ -66,7 +70,7 @@ class Moderation {
             const discordId = mute.getData().discordId;
             const job = new cron_1.CronJob(mute.getEndDate(), () => __awaiter(this, void 0, void 0, function* () {
                 try {
-                    this.unMuteMember(mute.getData().discordId).catch(err => console.log(err));
+                    yield this.unMuteMember(mute.getData().discordId).catch(err => console.log(err));
                 }
                 catch (err) {
                     console.log(err);

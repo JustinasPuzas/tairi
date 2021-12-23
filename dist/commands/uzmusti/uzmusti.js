@@ -53,7 +53,7 @@ class Uzmusti {
             if (!targetMember)
                 return console.log(`No mentions`);
             try {
-                yield moderation.muteMember(targetMember, message.member, 2 * 60 * 60 * 15 * 1000 // 2 * 60 * 60
+                yield moderation.muteMember(targetMember, message.member, 2 * 60 * 60 * 1000 // 2 * 60 * 60
                 );
                 embed = this.buildSuccessMessage(embed, memberId, targetMember.id);
             }

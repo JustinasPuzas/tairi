@@ -32,18 +32,6 @@ class DiscordPage {
         const row = new discord_js_1.default.MessageActionRow().addComponents([this.selectMenu]);
         this.page.components = [navRow, row];
     }
-    buttonClickHandler(customId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            switch (customId) {
-                case "plusRep":
-                    return this.page;
-                case "minusRep":
-                    return this.page;
-                default:
-                    return null;
-            }
-        });
-    }
     updateEmbed() {
         const targetUserName = this.targetMember.user.username + "#" + this.targetMember.user.discriminator;
         const targetAvatarUrl = this.targetMember.user.avatarURL() || this.authorMember.user.defaultAvatarURL;
