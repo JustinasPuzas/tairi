@@ -83,18 +83,18 @@ class ReputationPage {
                 .setCustomId("prevRepPage")
                 .setStyle("SECONDARY")
                 .setLabel(" ")
-                .setEmoji("◀️") : new discord_js_1.default.MessageButton()
+                .setEmoji("<:leftact:927166928550772756>") : new discord_js_1.default.MessageButton()
                 .setCustomId("prevRepPage")
                 .setStyle("SECONDARY")
                 .setDisabled(true)
                 .setLabel(" ")
-                .setEmoji("◀️");
+                .setEmoji("<:leftinc:927166954249285662>");
         }
         const nextPageBtn = ((this.pageId + 1) * 10) < this.reputationWithCommentsList.length ? new discord_js_1.default.MessageButton()
             .setCustomId("nextRepPage")
             .setStyle("SECONDARY")
             .setLabel(" ")
-            .setEmoji("▶️") : null;
+            .setEmoji("<:rightact:927166908816556032>") : null;
         const allReputation = displayDownloadButton ? new discord_js_1.default.MessageButton()
             .setCustomId("getAllRep")
             .setStyle("SECONDARY")

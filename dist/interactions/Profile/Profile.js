@@ -143,8 +143,7 @@ class Profile {
     }
     checkCoolDown(userId, channelId, interaction) {
         return __awaiter(this, void 0, void 0, function* () {
-            const greenLight = ["903249149615538179", "889528960029954049"];
-            if (greenLight.includes(channelId))
+            if (config_1.default.botCommandChannel.includes(channelId))
                 return false; // jei kanalas skirtas botu komandoms
             const openSince = this.openDisplayIn.get(channelId);
             if (!openSince)
