@@ -126,10 +126,9 @@ class ReputationTopPage {
     }
     findAuthorId() {
         this.list.forEach((item, index) => {
-            console.log(item);
-            console.log(index);
             if ((item === null || item === void 0 ? void 0 : item._id) == this.authorMember.id) {
-                this.pageId = index;
+                this.authorPageId = Math.floor(index / 10);
+                return;
             }
         });
     }
