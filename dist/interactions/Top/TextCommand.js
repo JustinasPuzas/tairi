@@ -26,6 +26,10 @@ class TopTextCommand {
         return __awaiter(this, void 0, void 0, function* () {
             const authorId = message.author.id;
             yield this.Parent.executeCommand(authorId, "reputation", message, client);
+            setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                if (!message.deleted)
+                    yield message.delete();
+            }), 2 * 60 * 1000);
         });
     }
     badInputs(message, error) {
