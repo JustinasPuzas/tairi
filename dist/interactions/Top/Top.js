@@ -62,8 +62,8 @@ class Top {
                 },
                 { $sort: { total: -1 } },
             ]);
-            const reputationPage = new Reputation_1.default(authorMember, positiveRep);
-            const messagesPage = new Messages_1.default(authorMember, messages);
+            const reputationPage = new Reputation_1.default(authorMember, positiveRep, this);
+            const messagesPage = new Messages_1.default(authorMember, messages, this);
             const reply = subCommand == "reputation" ? reputationPage.getPage(this.navRow) : messagesPage.getPage(this.navRow);
             const response = yield interaction.reply(Object.assign(Object.assign({}, reply), { fetchReply: true }));
             const responseId = response.id;
@@ -90,8 +90,6 @@ class Top {
                 const channel = client.Guild.channels.cache.get(interaction.channelId);
                 const msg = channel.messages.cache.get(responseId);
                 yield (msg === null || msg === void 0 ? void 0 : msg.delete().catch(err => console.error(err)));
-                //await (await response.fetch()).delete().catch(err => console.error(err))
-                //await response.delete().catch(err => console.error(err))
             }));
             console.log(positiveRep);
             // serve page
@@ -122,6 +120,9 @@ class Top {
                 case "reputationPage":
                     //if(this.pageId === customId) return null;
                     console.log(`REP`);
+                    if (this.pageId == customId) {
+                        reputationPage.reverseOrder();
+                    }
                     return yield reputationPage.getPage(navRow);
                 case "messagesPage":
                     console.log(`MSG`);

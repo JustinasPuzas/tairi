@@ -14,10 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = __importDefault(require("discord.js"));
 class MessageTopPage {
-    constructor(authorMember, list) {
+    constructor(authorMember, list, parent) {
         this.pageId = 0;
         this.page = { embeds: [], components: [] };
         this.authorPageId = 0;
+        this.parent = parent;
         this.authorMember = authorMember;
         this.list = list;
     }
@@ -25,6 +26,9 @@ class MessageTopPage {
     // selectMenu: discord.MessageSelectMenu
     ) {
         // this.selectMenu = selectMenu;
+        this.parent.pageId = "messagesPage";
+        this.parent.navRow.components[0].setStyle("SECONDARY");
+        this.parent.navRow.components[1].setStyle("PRIMARY");
         this.buttonClickHandler("initial", navRow);
         return this.page;
     }
@@ -131,7 +135,7 @@ class MessageTopPage {
             .setTitle(`🏆 Žinučių Top 10`)
             .setFooter(`${authorNickName}`, `${authorAvatarUrl}`)
             .setDescription(description)
-            .setColor("GREEN");
+            .setColor("WHITE");
         this.page.embeds = [embed];
     }
     loadData() { }

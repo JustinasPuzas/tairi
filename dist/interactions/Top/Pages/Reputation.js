@@ -14,17 +14,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = __importDefault(require("discord.js"));
 class ReputationTopPage {
-    constructor(authorMember, list) {
+    constructor(authorMember, list, parent) {
         this.pageId = 0;
         this.page = { embeds: [], components: [] };
+        this.reverse = false;
         this.authorPageId = 0;
+        this.embedColor = "#3AE5B1";
+        this.parent = parent;
         this.authorMember = authorMember;
         this.list = list;
+    }
+    reverseOrder() {
+        if (this.reverse == false) {
+            this.reverse = true;
+            this.embedColor = "#EF3457";
+            this.list.reverse();
+            this.parent.navRow.components[0].setEmoji("<:minus:911929648311574538>");
+            console.log(`NOW POSITIVE TO NEGATIVE`);
+        }
+        else {
+            this.reverse = false;
+            this.embedColor = "#3AE5B1";
+            this.list.reverse();
+            this.parent.navRow.components[0].setEmoji("<:plus:911929035838357505>");
+            console.log(`NOW NEGATIVE TO POSITIVE`);
+        }
     }
     getPage(navRow
     // selectMenu: discord.MessageSelectMenu
     ) {
         // this.selectMenu = selectMenu;
+        this.parent.pageId = "reputationPage";
+        this.parent.navRow.components[0].setStyle(this.reverse ? "DANGER" : "SUCCESS");
+        this.parent.navRow.components[1].setStyle("SECONDARY");
         this.buttonClickHandler("initial", navRow);
         return this.page;
     }
@@ -136,7 +158,7 @@ class ReputationTopPage {
             .setTitle(`🏆 Reputacijos Top 10`)
             .setFooter(`${authorNickName}`, `${authorAvatarUrl}`)
             .setDescription(description)
-            .setColor("YELLOW");
+            .setColor(this.embedColor);
         this.page.embeds = [embed];
     }
     loadData() { }
